@@ -12,6 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var moment = require("moment");
+var prop_types_1 = require("prop-types");
 var searchkit_1 = require("searchkit");
 var DateRangeAccessor_1 = require("./DateRangeAccessor");
 var lodash_1 = require("lodash");
@@ -114,18 +115,18 @@ var DateRangeFilter = (function (_super) {
     return DateRangeFilter;
 }(searchkit_1.SearchkitComponent));
 DateRangeFilter.propTypes = lodash_1.defaults({
-    fromDate: React.PropTypes.object,
-    toDate: React.PropTypes.object,
-    fromDateField: React.PropTypes.string.isRequired,
-    toDateField: React.PropTypes.string.isRequired,
-    title: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
+    fromDate: prop_types_1.PropTypes.object,
+    toDate: prop_types_1.PropTypes,
+    fromDateField: prop_types_1.PropTypes.string.isRequired,
+    toDateField: prop_types_1.PropTypes.string.isRequired,
+    title: prop_types_1.PropTypes.string.isRequired,
+    id: prop_types_1.PropTypes.string.isRequired,
     containerComponent: searchkit_1.RenderComponentPropType,
     calendarComponent: searchkit_1.RenderComponentPropType,
-    rangeFormatter: React.PropTypes.func,
-    fieldOptions: React.PropTypes.shape({
-        type: React.PropTypes.oneOf(["embedded", "nested", "children"]).isRequired,
-        options: React.PropTypes.object
+    rangeFormatter: prop_types_1.PropTypes.func,
+    fieldOptions: prop_types_1.PropTypes.shape({
+        type: prop_types_1.PropTypes.oneOf(["embedded", "nested", "children"]).isRequired,
+        options: prop_types_1.PropTypes.object
     }),
 }, searchkit_1.SearchkitComponent.propTypes);
 DateRangeFilter.defaultProps = {
