@@ -88,9 +88,11 @@ var DateRangeFilter = (function (_super) {
     };
     DateRangeFilter.prototype.getCalendarComponent = function () {
         var calendarComponent = this.props.calendarComponent;
-        return (calendarComponent || DateRangeFilterInput);
+        return calendarComponent || DateRangeFilterInput;
     };
     DateRangeFilter.prototype.render = function () {
+        if (!this.accessor)
+            return null;
         var _a = this.props, id = _a.id, title = _a.title, containerComponent = _a.containerComponent;
         return searchkit_1.renderComponent(containerComponent, {
             title: title,
@@ -127,11 +129,11 @@ DateRangeFilter.propTypes = lodash_1.defaults({
     fieldOptions: prop_types_1.PropTypes.shape({
         type: prop_types_1.PropTypes.oneOf(["embedded", "nested", "children"]).isRequired,
         options: prop_types_1.PropTypes.object
-    }),
+    })
 }, searchkit_1.SearchkitComponent.propTypes);
 DateRangeFilter.defaultProps = {
     containerComponent: searchkit_1.Panel,
-    rangeFormatter: function (v) { return moment(parseInt("" + v)).format('D.M.YYYY'); }
+    rangeFormatter: function (v) { return moment(parseInt("" + v)).format("D.M.YYYY"); }
 };
 exports.DateRangeFilter = DateRangeFilter;
 //# sourceMappingURL=DateRangeFilter.js.map
