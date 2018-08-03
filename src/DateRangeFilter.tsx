@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
-import {PropTypes} from 'prop-types';
+import { PropTypes } from "prop-types";
 
 import {
   SearchkitComponent,
@@ -10,19 +10,11 @@ import {
   renderComponent,
   FieldOptions,
   Panel
-} from "searchkit"
+} from "searchkit";
 
-import {
-  DateRangeAccessor,
-} from "./DateRangeAccessor"
+import { DateRangeAccessor } from "./DateRangeAccessor";
 
-
-import {
-  defaults,
-  map,
-  get
-} from "lodash"
-
+import { defaults, map, get } from "lodash";
 
 // For testing without a calendar component. Accepts date math.
 export class DateRangeFilterInput extends SearchkitComponent<any, any> {
@@ -30,72 +22,78 @@ export class DateRangeFilterInput extends SearchkitComponent<any, any> {
     [key: string]: any;
     dateFromInput: any;
     dateToInput: any;
-  }
+  };
 
-  handleDateFinished = (event) => {
-    const { onFinished } = this.props
+  handleDateFinished = event => {
+    const { onFinished } = this.props;
     const newState = {
       fromDate: this.refs.dateFromInput.value,
       toDate: this.refs.dateToInput.value
-    }
-    onFinished(newState)
-  }
+    };
+    onFinished(newState);
+  };
 
   render() {
-    const { fromDate, toDate } = this.props
+    const { fromDate, toDate } = this.props;
 
     return (
       <div>
         <input id="date-from" ref="dateFromInput" defaultValue={fromDate} />
         <input id="date-to" ref="dateToInput" defaultValue={toDate} />
-        <button id="date-submit" onClick={this.handleDateFinished}>OK</button>
+        <button id="date-submit" onClick={this.handleDateFinished}>
+          OK
+        </button>
       </div>
-    )
+    );
   }
 }
 
-
 export interface DateRangeFilterProps extends SearchkitComponentProps {
-  fromDateField:string
-  toDateField:string
-  fromDate?:moment.Moment
-  toDate?:moment.Moment
-  id:string
-  title:string
-  interval?:number
-  containerComponent?: RenderComponentType<any>
-  calendarComponent?: RenderComponentType<any>
-  rangeFormatter?:(count:number)=> number | string
-  fieldOptions?:FieldOptions
+  fromDateField: string;
+  toDateField: string;
+  fromDate?: moment.Moment;
+  toDate?: moment.Moment;
+  id: string;
+  title: string;
+  interval?: number;
+  containerComponent?: RenderComponentType<any>;
+  calendarComponent?: RenderComponentType<any>;
+  rangeFormatter?: (count: number) => number | string;
+  fieldOptions?: FieldOptions;
 }
 
+export class DateRangeFilter extends SearchkitComponent<
+  DateRangeFilterProps,
+  any
+> {
+  accessor: DateRangeAccessor;
 
-export class DateRangeFilter extends SearchkitComponent<DateRangeFilterProps, any> {
-  accessor:DateRangeAccessor
-
-  static propTypes = defaults({
-    fromDate:PropTypes.object,
-    toDate:PropTypes,
-    fromDateField:PropTypes.string.isRequired,
-    toDateField:PropTypes.string.isRequired,
-    title:PropTypes.string.isRequired,
-    id:PropTypes.string.isRequired,
-    containerComponent:RenderComponentPropType,
-    calendarComponent:RenderComponentPropType,
-    rangeFormatter:PropTypes.func,
-    fieldOptions:PropTypes.shape({
-      type:PropTypes.oneOf(["embedded", "nested", "children"]).isRequired,
-      options:PropTypes.object
-    }),
-  }, SearchkitComponent.propTypes)
+  static propTypes = defaults(
+    {
+      fromDate: PropTypes.object,
+      toDate: PropTypes,
+      fromDateField: PropTypes.string.isRequired,
+      toDateField: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      containerComponent: RenderComponentPropType,
+      calendarComponent: RenderComponentPropType,
+      rangeFormatter: PropTypes.func,
+      fieldOptions: PropTypes.shape({
+        type: PropTypes.oneOf(["embedded", "nested", "children"]).isRequired,
+        options: PropTypes.object
+      })
+    },
+    SearchkitComponent.propTypes
+  );
 
   static defaultProps = {
     containerComponent: Panel,
-    rangeFormatter: (v) => moment(parseInt(""+v)).format('D.M.YYYY')
-  }
+    rangeFormatter: v => moment(parseInt("" + v)).format("D.M.YYYY")
+  };
 
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
   }
 
   defineAccessor() {
@@ -107,8 +105,8 @@ export class DateRangeFilter extends SearchkitComponent<DateRangeFilterProps, an
       fromDateField,
       toDateField,
       fieldOptions,
-      rangeFormatter,
-    } = this.props
+      rangeFormatter
+    } = this.props;
 
     return new DateRangeAccessor(id, {
       id,
@@ -120,57 +118,64 @@ export class DateRangeFilter extends SearchkitComponent<DateRangeFilterProps, an
       fieldOptions,
       rangeFormatter,
       onClearState: this.handleClearState
-    })
+    });
   }
 
   handleClearState = () => {
-    this.accessor.resetState()
-  }
+    this.accessor.resetState();
+  };
 
   defineBEMBlocks() {
-    let block = this.props.mod || "sk-date-range-filter"
+    let block = this.props.mod || "sk-date-range-filter";
     return {
       container: block,
-      labels: block+"-value-labels"
-    }
+      labels: block + "-value-labels"
+    };
   }
 
-  setCalendarState = (newValues) => {
+  setCalendarState = newValues => {
     if (!newValues.fromDate) {
-      this.accessor.resetState()
+      this.accessor.resetState();
+    } else {
+      this.accessor.state = this.accessor.state.setValue(newValues);
     }
-    else {
-      this.accessor.state = this.accessor.state.setValue(newValues)
-    }
-  }
+  };
 
-  calendarUpdate = (newValues) => {
-    this.setCalendarState(newValues)
-  }
+  calendarUpdate = newValues => {
+    this.setCalendarState(newValues);
+  };
 
-  calendarUpdateAndSearch = (newValues) => {
-    this.calendarUpdate(newValues)
-    this.searchkit.performSearch()
-  }
+  calendarUpdateAndSearch = newValues => {
+    this.calendarUpdate(newValues);
+    this.searchkit.performSearch();
+  };
 
   getCalendarComponent() {
-    const { calendarComponent } = this.props
-    return (calendarComponent || DateRangeFilterInput)
+    const { calendarComponent } = this.props;
+    return calendarComponent || DateRangeFilterInput;
   }
 
   render() {
-    const { id, title, containerComponent } = this.props
+    if (!this.accessor) return null;
+    const { id, title, containerComponent } = this.props;
 
-    return renderComponent(containerComponent, {
-      title,
-      className: id ? `filter--${id}` : undefined,
-      disabled: this.accessor.isDisabled()
-    }, this.renderCalendarComponent(this.getCalendarComponent()))
+    return renderComponent(
+      containerComponent,
+      {
+        title,
+        className: id ? `filter--${id}` : undefined,
+        disabled: this.accessor.isDisabled()
+      },
+      this.renderCalendarComponent(this.getCalendarComponent())
+    );
   }
 
   renderCalendarComponent(component: RenderComponentType<any>) {
-    const { fromDate, toDate, rangeFormatter } = this.props
-    const state:{ fromDate?:string, toDate?:string } = this.accessor.state.getValue()
+    const { fromDate, toDate, rangeFormatter } = this.props;
+    const state: {
+      fromDate?: string;
+      toDate?: string;
+    } = this.accessor.state.getValue();
 
     return renderComponent(component, {
       fromDate: state.fromDate || fromDate,
@@ -181,7 +186,6 @@ export class DateRangeFilter extends SearchkitComponent<DateRangeFilterProps, an
       onChange: this.calendarUpdate,
       onFinished: this.calendarUpdateAndSearch,
       rangeFormatter
-    })
+    });
   }
-
 }
